@@ -10,3 +10,4 @@
     PORT: "{{ app_port }}"
     NODE_ENV: production
   changed_when: true
+  when: not ansible_check_mode
