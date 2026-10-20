@@ -22,6 +22,7 @@ common_packages:
   - ca-certificates
   - gnupg
   - acl          # nécessaire pour become_user vers un utilisateur non privilégié
+  - python3-debian   # requis par le module deb822_repository (rôle nodejs)
 
 # --- Node.js ---
 nodejs_major: 22               # Next.js 16 exige Node.js >= 20.9

@@ -21,6 +21,8 @@
     signed_by: "{{ nodejs_keyring }}"
     state: present
   register: nodejs_repo
+  # En --check sur un serveur vierge, python3-debian est encore absent
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Rafraîchir le cache apt si le dépôt vient d'être ajouté
   ansible.builtin.apt:
