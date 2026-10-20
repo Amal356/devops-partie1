@@ -3,7 +3,7 @@
 # Les secrets (mot de passe admin, clé de chiffrement) sont dans le fichier .env (non versionné)
 services:
   semaphore:
-    image: semaphoreui/semaphore:v2.16.47
+    image: semaphoreui/semaphore:v2.19.17
     container_name: semaphore
     restart: unless-stopped
     ports:
