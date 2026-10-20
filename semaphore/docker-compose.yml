@@ -1,4 +1,4 @@
-# Semaphore UI (base BoltDB intégrée, aucun service externe)
+# Semaphore UI (base SQLite intégrée, aucun service externe)
 # Lancement sur docker-vm : docker compose up -d   puis   http://192.168.56.30:3000
 # Les secrets (mot de passe admin, clé de chiffrement) sont dans le fichier .env (non versionné)
 services:
@@ -9,7 +9,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      SEMAPHORE_DB_DIALECT: bolt
+      SEMAPHORE_DB_DIALECT: sqlite
+      SEMAPHORE_DB: /var/lib/semaphore/semaphore.sqlite
       SEMAPHORE_ADMIN: admin
       SEMAPHORE_ADMIN_NAME: Admin
       SEMAPHORE_ADMIN_EMAIL: admin@localhost
