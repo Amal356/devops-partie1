@@ -18,9 +18,11 @@
   register: app_git
   notify: Redémarrer le portfolio
 
-- name: Vérifier la présence de node_modules
+- name: Vérifier qu'une installation npm complète existe
   ansible.builtin.stat:
-    path: "{{ app_src_dir }}/node_modules"
+    # Fichier écrit par npm à la fin d'une installation réussie
+    # (un dossier node_modules seul peut rester incomplet après une coupure réseau)
+    path: "{{ app_src_dir }}/node_modules/.package-lock.json"
   register: app_node_modules
 
 - name: Vérifier la présence d'un build Next.js
@@ -34,6 +36,11 @@
   ansible.builtin.command:
     cmd: npm ci
     chdir: "{{ app_src_dir }}"
+  register: app_npm_ci
+  # Jusqu'à 3 essais en cas de coupure réseau (ECONNRESET)
+  retries: 3
+  delay: 10
+  until: app_npm_ci.rc == 0
   # Pas en --check : le dépôt n'est pas réellement cloné, le dossier n'existe pas
   when: not ansible_check_mode and (app_git.changed or not app_node_modules.stat.exists)
   changed_when: true
