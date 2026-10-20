@@ -1,0 +1,12 @@
+---
+# Déclenché uniquement quand la tâche git rapporte « changed » (nouveau commit)
+- name: Redémarrer le portfolio
+  become: true
+  become_user: "{{ deploy_user }}"
+  ansible.builtin.shell:
+    cmd: "pm2 restart {{ app_name }} --update-env && pm2 save"
+    chdir: "{{ app_src_dir }}"
+  environment:
+    PORT: "{{ app_port }}"
+    NODE_ENV: production
+  changed_when: true

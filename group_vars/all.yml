@@ -1,0 +1,28 @@
+---
+# --- Application ---
+# Le portfolio Next.js est dans le sous-dossier portfolio-next du dépôt cv-devsecops
+app_repo: "https://github.com/Amal356/cv-devsecops.git"
+app_version: "main"            # branche ou tag (surchargé par le Survey Semaphore)
+app_dir: "/opt/portfolio"      # clone du dépôt
+app_subdir: "portfolio-next"   # dossier de l'application Next.js dans le dépôt
+app_src_dir: "{{ app_dir }}/{{ app_subdir }}"
+app_port: 3000
+app_name: "portfolio"          # nom du processus PM2
+
+# --- Serveur ---
+server_name: "portfolio.local"
+deploy_user: "deploy"
+deploy_home: "/home/{{ deploy_user }}"
+
+# --- Paquets de base ---
+common_packages:
+  - git
+  - curl
+  - build-essential
+  - ca-certificates
+  - gnupg
+  - acl          # nécessaire pour become_user vers un utilisateur non privilégié
+
+# --- Node.js ---
+nodejs_major: 22               # Next.js 16 exige Node.js >= 20.9
+nodejs_keyring: "/etc/apt/keyrings/nodesource.asc"

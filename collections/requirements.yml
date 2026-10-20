@@ -1,0 +1,4 @@
+---
+# Installé automatiquement par Semaphore (et via : ansible-galaxy collection install -r collections/requirements.yml)
+collections:
+  - name: community.general

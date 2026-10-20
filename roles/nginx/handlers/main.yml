@@ -1,0 +1,10 @@
+---
+# Les handlers s'exécutent dans l'ordre de ce fichier : test puis reload
+- name: Tester la configuration Nginx
+  ansible.builtin.command: nginx -t
+  changed_when: false
+
+- name: Recharger Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded

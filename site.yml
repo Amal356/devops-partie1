@@ -1,0 +1,24 @@
+---
+- name: Déployer le portfolio Next.js
+  hosts: web
+  become: true
+
+  roles:
+    - common
+    - nodejs
+    - app
+    - nginx
+
+  post_tasks:
+    - name: Vérifier que le portfolio répond via Nginx
+      ansible.builtin.uri:
+        url: "http://127.0.0.1/"
+        headers:
+          Host: "{{ server_name }}"
+        status_code: 200
+      register: portfolio_check
+      retries: 10
+      delay: 3
+      until: portfolio_check.status == 200
+      changed_when: false
+      when: not ansible_check_mode

@@ -1,0 +1,76 @@
+---
+- name: Créer le dossier de l'application
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+    mode: "0755"
+
+- name: Cloner / mettre à jour le dépôt du portfolio
+  become: true
+  become_user: "{{ deploy_user }}"
+  ansible.builtin.git:
+    repo: "{{ app_repo }}"
+    dest: "{{ app_dir }}"
+    version: "{{ app_version }}"
+    force: true
+  register: app_git
+  notify: Redémarrer le portfolio
+
+- name: Vérifier la présence de node_modules
+  ansible.builtin.stat:
+    path: "{{ app_src_dir }}/node_modules"
+  register: app_node_modules
+
+- name: Vérifier la présence d'un build Next.js
+  ansible.builtin.stat:
+    path: "{{ app_src_dir }}/.next/BUILD_ID"
+  register: app_build
+
+- name: Installer les dépendances (npm ci) si le code a changé
+  become: true
+  become_user: "{{ deploy_user }}"
+  ansible.builtin.command:
+    cmd: npm ci
+    chdir: "{{ app_src_dir }}"
+  when: app_git.changed or not app_node_modules.stat.exists
+  changed_when: true
+
+- name: Construire l'application (npm run build) si le code a changé
+  become: true
+  become_user: "{{ deploy_user }}"
+  ansible.builtin.command:
+    cmd: npm run build
+    chdir: "{{ app_src_dir }}"
+  environment:
+    NEXT_TELEMETRY_DISABLED: "1"
+  when: app_git.changed or not app_build.stat.exists
+  changed_when: true
+
+- name: Vérifier si l'application est déjà gérée par PM2
+  become: true
+  become_user: "{{ deploy_user }}"
+  ansible.builtin.command:
+    cmd: "pm2 describe {{ app_name }}"
+  register: app_pm2
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Démarrer l'application avec PM2 (port {{ app_port }})
+  become: true
+  become_user: "{{ deploy_user }}"
+  ansible.builtin.shell:
+    cmd: "pm2 start npm --name {{ app_name }} -- start && pm2 save"
+    chdir: "{{ app_src_dir }}"
+  environment:
+    PORT: "{{ app_port }}"
+    NODE_ENV: production
+  when: app_pm2.rc != 0
+  changed_when: true
+
+- name: Activer le démarrage de PM2 au boot (systemd)
+  ansible.builtin.command:
+    cmd: "pm2 startup systemd -u {{ deploy_user }} --hp {{ deploy_home }}"
+    creates: "/etc/systemd/system/pm2-{{ deploy_user }}.service"

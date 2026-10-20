@@ -1,0 +1,28 @@
+# Semaphore UI (base BoltDB intégrée, aucun service externe)
+# Lancement sur docker-vm : docker compose up -d   puis   http://192.168.56.30:3000
+# Les secrets (mot de passe admin, clé de chiffrement) sont dans le fichier .env (non versionné)
+services:
+  semaphore:
+    image: semaphoreui/semaphore:v2.16.47
+    container_name: semaphore
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      SEMAPHORE_DB_DIALECT: bolt
+      SEMAPHORE_ADMIN: admin
+      SEMAPHORE_ADMIN_NAME: Admin
+      SEMAPHORE_ADMIN_EMAIL: admin@localhost
+      SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_ADMIN_PASSWORD:?à définir dans .env}
+      # Clé de chiffrement du Key Store (clés SSH stockées chiffrées)
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: ${SEMAPHORE_ACCESS_KEY_ENCRYPTION:?à définir dans .env}
+      ANSIBLE_HOST_KEY_CHECKING: "False"
+    volumes:
+      - semaphore_data:/var/lib/semaphore
+      - semaphore_config:/etc/semaphore
+      - semaphore_tmp:/tmp/semaphore
+
+volumes:
+  semaphore_data:
+  semaphore_config:
+  semaphore_tmp:

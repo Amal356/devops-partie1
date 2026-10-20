@@ -1,0 +1,22 @@
+# TP1 (Ansible + Semaphore UI) : serveur cible vierge Ubuntu 24.04
+# Création :         vagrant up
+# Remise à zéro :    vagrant destroy -f  puis  vagrant up
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-24.04"
+  config.vm.boot_timeout = 600
+
+  config.vm.define "tp1-server" do |tp1|
+    tp1.vm.hostname = "tp1-server"
+    # Même réseau privé hôte que ansible-admin (.20) et docker-vm (.30)
+    tp1.vm.network "private_network", ip: "192.168.56.50"
+    # Port SSH fixe côté Windows (2222, 2201 et 2202 sont déjà pris)
+    tp1.vm.network "forwarded_port", guest: 22, host: 2203, id: "ssh"
+    tp1.vm.provider "virtualbox" do |vb|
+      vb.name = "tp1-server"
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+    # Seule préparation : l'utilisateur deploy avec accès SSH par clé (prérequis du TP)
+    tp1.vm.provision "shell", path: "scripts/preparer-deploy.sh"
+  end
+end
