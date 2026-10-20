@@ -121,6 +121,73 @@ Lancer **Deploy Portfolio**, suivre les logs, modifier une page du portfolio, po
 - **`become_user` échoue (« chmod: invalid mode »)** : paquet `acl` absent ; il est installé par le rôle `common`.
 - **502 Bad Gateway** : l'application n'écoute pas encore sur 3000 → `sudo -u deploy pm2 logs portfolio`.
 
-## Captures
+## Résultats
 
-Dans [`captures/`](captures) : `semaphore-template.png`, `semaphore-run.png`, `portfolio.png`, `idempotence.png`.
+### Partie A – ligne de commande (depuis `ansible-admin`)
+
+Connexion et syntaxe :
+
+![ping et syntax-check](captures/01-ping-syntax.png)
+
+Dry-run `--check --diff` : `ok=20 changed=9 failed=0 skipped=8 ignored=5`. Le `--diff` montre à l'avance le vhost Nginx généré par le template. La première tentative avait échoué faute de `python3-debian` (voir le [rapport](RAPPORT.md)) :
+
+![Échec du dry-run](captures/02a-check-erreur-python3-debian.png)
+
+Premier déploiement : `ok=26 changed=9 failed=0`. La dernière tâche vérifie que le portfolio répond en HTTP 200 via Nginx.
+
+![Premier déploiement](captures/03-premier-deploiement-debut.png)
+
+Le portfolio sur `http://192.168.56.50` :
+
+![Portfolio](captures/portfolio.png)
+
+Deuxième exécution : **`changed=0`**, le playbook est idempotent.
+
+![Idempotence, début](captures/idempotence-debut.png)
+
+![Idempotence](captures/idempotence.png)
+
+### Partie B – Semaphore UI
+
+Clé SSH dédiée à Semaphore, installée sur le serveur avec Ansible :
+
+```bash
+# sur docker-vm
+ssh-keygen -t ed25519 -C "semaphore" -N "" -f ~/.ssh/semaphore_deploy
+# sur ansible-admin
+ansible web -b -m ansible.posix.authorized_key -a "user=deploy key='ssh-ed25519 AAAA... semaphore'"
+```
+
+![Clé autorisée](captures/04-cle-semaphore-autorisee.png)
+
+Key Store, Repository, Inventory et Variable Group :
+
+![Key Store](captures/05-semaphore-keystore.png)
+
+![Repository](captures/06-semaphore-repository.png)
+
+![Inventory](captures/07-semaphore-inventory.png)
+
+![Variable Groups](captures/08-semaphore-variables.png)
+
+Survey variable `app_version` (passée en *extra var*) et template **Deploy Portfolio** :
+
+![Survey](captures/09-semaphore-survey.png)
+
+![Template](captures/semaphore-template.png)
+
+Run #1 : **Success**, `failed=0`.
+
+![Run Semaphore](captures/semaphore-run.png)
+
+### Mise à jour du portfolio et redémarrage conditionnel
+
+Une phrase est ajoutée à la page d'accueil du portfolio (commit sur `cv-devsecops`), puis **Deploy Portfolio** est relancé. La tâche `git` passe en *changed* :
+
+![Run 2 : git changed](captures/10-semaphore-run2-git-changed.png)
+
+`npm ci` et `npm run build` s'exécutent, puis le handler **Redémarrer le portfolio**. Il ne s'était pas exécuté au run #1, sans changement de code.
+
+![Run 2 : handler](captures/11-semaphore-run2-handler.png)
+
+![Portfolio mis à jour](captures/12-portfolio-mis-a-jour.png)
