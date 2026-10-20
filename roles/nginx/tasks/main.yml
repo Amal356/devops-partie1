@@ -11,6 +11,8 @@
     owner: root
     group: root
     mode: "0644"
+  # En --check sur un serveur vierge, Nginx et /etc/nginx ne sont pas encore installés
+  ignore_errors: "{{ ansible_check_mode }}"
   notify:
     - Tester la configuration Nginx
     - Recharger Nginx
@@ -38,3 +40,4 @@
     name: nginx
     state: started
     enabled: true
+  ignore_errors: "{{ ansible_check_mode }}"

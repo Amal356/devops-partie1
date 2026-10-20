@@ -8,3 +8,4 @@
   ansible.builtin.service:
     name: nginx
     state: reloaded
+  ignore_errors: "{{ ansible_check_mode }}"
