@@ -1,0 +1,21 @@
+# Forgejo : forge Git auto-hébergée, dans la même VM que Coolify
+# Lancer : sudo docker compose up -d      Interface : http://192.168.56.70:3001
+services:
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:16   # miroir si besoin : data.forgejo.org/forgejo/forgejo:16
+    container_name: forgejo
+    restart: unless-stopped
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      # Autorise les webhooks vers une adresse privée (Coolify est sur la même VM)
+      - FORGEJO__webhook__ALLOWED_HOST_LIST=external,private
+    volumes:
+      - forgejo-data:/data
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3001:3000"   # interface web (le port 3000 est réservé au portfolio)
+      - "2222:22"     # SSH Git
+
+volumes:
+  forgejo-data:

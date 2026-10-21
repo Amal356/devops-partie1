@@ -35,7 +35,7 @@ Le serveur cible ne reçoit qu'une préparation minimale par Vagrant ([`preparer
 ## Structure
 
 ```
-portfolio-deploy/
+tp1-ansible-semaphore/
 ├── ansible.cfg
 ├── inventory/hosts.ini           # tp1-server, utilisateur deploy
 ├── group_vars/all.yml            # toutes les variables (aucune valeur en dur)
@@ -77,8 +77,8 @@ Le portfolio est dans un **sous-dossier** du dépôt : `app_dir` est le clone (`
 Depuis `ansible-admin` :
 
 ```bash
-git clone git@github.com:Amal356/portfolio-deploy.git
-cd portfolio-deploy
+git clone git@github.com:Amal356/devops-partie1.git
+cd devops-partie1/tp1-ansible-semaphore
 ansible all -m ping
 ansible-playbook -i inventory/hosts.ini site.yml --syntax-check
 ansible-playbook -i inventory/hosts.ini site.yml --check --diff
@@ -107,7 +107,7 @@ Le mot de passe et la clé de chiffrement du Key Store sont dans `.env`, exclu p
 |---|---|---|
 | 1 | Projects → New | `portfolio-deploy` |
 | 2 | Key Store | *SSH Key* `deploy-ssh` (clé privée autorisée pour `deploy`) ; *None* pour le dépôt public |
-| 3 | Repositories | `https://github.com/Amal356/portfolio-deploy.git`, branche `main` |
+| 3 | Repositories | `https://github.com/Amal356/devops-partie1.git`, branche `main` |
 | 4 | Inventory | Static, contenu de `inventory/hosts.ini`, User Credentials : `deploy-ssh` |
 | 5 | Variable Groups | `portfolio-vars` : contenu de `semaphore/variable-group.json` |
 | 6 | Task Templates → New | **Deploy Portfolio**, playbook `site.yml`, inventaire, dépôt, groupe de variables |
