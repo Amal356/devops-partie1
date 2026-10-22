@@ -151,3 +151,22 @@ Coolify lance seul un déploiement **Webhook** (`33e178e`, 1 min 26 s grâce au 
 ### Supervision
 
 `sudo docker stats --no-stream` : portfolio **40 Mio**, Forgejo **151 Mio**, pile Coolify (interface, PostgreSQL, Redis, Traefik, Sentinel) **≈ 512 Mio**, CPU < 1 % au repos. Les logs sont consultables dans *Deployment Logs* et *Runtime Logs*.
+
+## Captures complémentaires
+
+**00-coolify-setup-complete**
+
+![00-coolify-setup-complete](captures/00-coolify-setup-complete.png)
+
+**c3-docker-ps**
+
+![c3-docker-ps](captures/c3-docker-ps.png)
+
+**d3-portfolio-apres-rollback**
+
+![d3-portfolio-apres-rollback](captures/d3-portfolio-apres-rollback.png)
+
+**d3-portfolio-corrige**
+
+![d3-portfolio-corrige](captures/d3-portfolio-corrige.png)
+

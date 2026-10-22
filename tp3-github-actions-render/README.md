@@ -50,3 +50,50 @@ jobs:
 | PR #3 : test rouge, fusion bloquée | ![](captures/pr-failing-verify.png) |
 | PR #3 corrigée : `/api/version` | ![](captures/api-version.png) |
 | PR #4 : preview et production | ![](captures/preview-vs-production.png) |
+
+## Captures complémentaires
+
+**actions-main-after-pr2**
+
+![actions-main-after-pr2](captures/actions-main-after-pr2.png)
+
+**pr1-checks-passed**
+
+![pr1-checks-passed](captures/pr1-checks-passed.png)
+
+**pr1-merged**
+
+![pr1-merged](captures/pr1-merged.png)
+
+**pr2-verify-required-passed**
+
+![pr2-verify-required-passed](captures/pr2-verify-required-passed.png)
+
+**pr3-verify-fixed**
+
+![pr3-verify-fixed](captures/pr3-verify-fixed.png)
+
+**pr4-preview-deployed**
+
+![pr4-preview-deployed](captures/pr4-preview-deployed.png)
+
+**pr4-preview-deploying**
+
+![pr4-preview-deploying](captures/pr4-preview-deploying.png)
+
+**render-deploy-pr2**
+
+![render-deploy-pr2](captures/render-deploy-pr2.png)
+
+**render-deploy-pr3**
+
+![render-deploy-pr3](captures/render-deploy-pr3.png)
+
+**render-homepage-initial**
+
+![render-homepage-initial](captures/render-homepage-initial.png)
+
+**render-previews-automatic**
+
+![render-previews-automatic](captures/render-previews-automatic.png)
+
